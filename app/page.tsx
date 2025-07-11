@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
   const [currentFloor, setCurrentFloor] = useState(1);
+  const [targetFloor, setTargetFloor] = useState(null);
+  useEffect(() => {
+    if(targetFloor !== null && targetFloor !== currentFloor){
+      const timer = setTimeout(()=> {
+        setCurrentFloor(prev => (prev < targetFloor ? prev + 1 : prev - 1));
+      }, 1000);
+      return () => clearTimeout(timer);
+      }
+    }, [currentFloor, targetFloor]);
 
   return (
     <div className={styles.page}>
@@ -13,8 +22,8 @@ export default function Home() {
           <div className={styles.elevator}>
             <p>現在のフロア {currentFloor}</p>
             <div className={styles.buttons}>
-              {[1, 2, 3, 4, 5, 6].map((floor) => (
-                <button key={floor} onClick={() => setCurrentFloor(floor)}>
+              {[1, 2, 3, 4, 5, 6].map(floor => (
+                <button key={floor} onClick={() => setTargetFloor(floor)}>
                   {floor}
                 </button>
               ))}
